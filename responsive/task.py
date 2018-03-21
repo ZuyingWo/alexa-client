@@ -12,7 +12,6 @@ def main():
     save_to = './tmp/test_ask.mp3'
     alexa.ask(input, save_to=save_to)
     print "Response saved to {}".format(save_to)
-    alexa.playback(save_to)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 #! /usr/bin/env python
-from alexa_client.settings import PRODUCT_ID, CLIENT_ID, CLIENT_SECRET, WEB_PORT
+from alexa_client.settings import PRODUCT_ID, CLIENT_ID, CLIENT_SECRET, WEB_PORT, SERIAL_NUMBER
+from alexa_client.settings import update_token
 import cherrypy
 import json
 import os
@@ -14,7 +15,7 @@ class Start(object):
             "alexa:all": {
                 "productID": PRODUCT_ID,
                 "productInstanceAttributes": {
-                    "deviceSerialNumber": uuid.getnode()
+                    "deviceSerialNumber": SERIAL_NUMBER
                 }
             }
         })
@@ -44,6 +45,7 @@ class Start(object):
         url = "https://api.amazon.com/auth/o2/token"
         r = requests.post(url, data=payload)
         resp = r.json()
+        update_token(resp['refresh_token'])
         return "Success! Here is your refresh token:<br>{}".format(
             resp['refresh_token'])
 

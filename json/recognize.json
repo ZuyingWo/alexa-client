@@ -1,0 +1,63 @@
+{                                                          
+  "event":{
+    "payload":{
+        "format":"AUDIO_L16_RATE_16000_CHANNELS_1",
+        "profile": "NEAR_FIELD"
+    },
+    "header":{
+        "dialogRequestId":"dialogRequestId123",
+        "messageId":"messageId123",
+        "name":"Recognize",
+        "namespace":"SpeechRecognizer"
+    }
+  },
+  "context":[{
+    "payload":{
+      "allAlerts": [
+        {
+          "token": "foo-bar",
+          "type": "ALARM",
+          "scheduledTime": "2015-10-30T22:34:51+00:00"
+        }
+      ],
+      "activeAlerts": [
+      ]
+    },
+    "header":{
+      "name":"AlertsState",
+      "namespace":"Alerts"
+    }
+  },
+  {
+    "payload":{
+      "playerActivity":"IDLE",
+      "offsetInMilliseconds":0,
+      "token":""
+    },
+    "header":{
+      "name":"PlaybackState",
+      "namespace":"AudioPlayer"
+    }
+  },
+    {
+      "payload":{
+        "muted":false,
+        "volume":50
+      },
+      "header":{
+        "name":"VolumeState",
+        "namespace":"Speaker"
+      }
+  },
+    {
+      "payload":{
+        "playerActivity":"FINISHED",
+        "offsetInMilliseconds":0,
+        "token":""
+      },
+      "header":{
+        "name":"SpeechState",
+        "namespace":"SpeechSynthesizer"
+      }
+  }]
+}

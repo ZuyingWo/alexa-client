@@ -12,13 +12,16 @@ import uuid
 
 
 class AlexaClient(object):
-    def __init__(self, token=None, client_id=settings.CLIENT_ID,
-                 client_secret=settings.CLIENT_SECRET,
-                 refresh_token=settings.REFRESH_TOKEN, *args, **kwargs):
+    __conf__ = None
+    __area__ = 'us'
+
+    def __init__(self, token=None, conf=settings.AlexaConf,
+                 *args, **kwargs):
+        self.__conf__ = conf
         self._token = token
-        self._client_id = client_id
-        self._client_secret = client_secret
-        self._refresh_token = refresh_token
+        self._client_id = conf['authDelegate']['clientId']
+        self._client_secret = conf['authDelegate']['clientSecret']
+        self._refresh_token = conf['authDelegate']['refreshToken']
         self.temp_dir = tempfile.mkdtemp()
 
     def get_token(self, refresh=False):
@@ -48,6 +51,11 @@ class AlexaClient(object):
         res = requests.post(url, data=payload)
         res_json = json.loads(res.text)
         self._token = res_json['access_token']
+        if self.__conf__['authDelegate']['refreshToken'] == res_json['refresh_token']:
+            pass
+        else:
+            settings.update_token(res_json['refresh_token'])
+
         return self._token
 
     def get_request_params(self):
@@ -61,8 +69,16 @@ class AlexaClient(object):
                url (str): Request URL
                headers (dict): Request headers
                request_data (dict): Predefined request payload parameters
+
+        Note:
+            endpoint "https://access-alexa-na.amazon.com" is out of date
+
+        Refre:
+            https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/rest/speechrecognizer-recognize-request
+
         """
-        url = "https://access-alexa-na.amazon.com/v1"
+        url = "{!s}/v1".format(self.__conf__['sampleApp']['endpoint'][self.__area__])
+        # url = 'https://access-alexa-na.amazon.com/v1'
         url += "/avs/speechrecognizer/recognize"
         headers = {'Authorization': 'Bearer %s' % self.get_token()}
         request_data = {
@@ -81,7 +97,7 @@ class AlexaClient(object):
             },
             "messageBody": {
                 "profile": "alexa-close-talk",
-                "locale": "en-us",
+                "locale": self.__conf__["settings"]["defaultAVSClientSettings"]["locale"],
                 "format": "audio/L16; rate=16000; channels=1"
             }
         }
@@ -236,3 +252,14 @@ class AlexaClient(object):
         Deletes all files and directories in the temporary directory.
         """
         shutil.rmtree(self.temp_dir)
+
+    def playback(self, mpeg_file):
+        import pygame
+        pygame.mixer.init()
+        pygame.mixer.music.load(mpeg_file)
+        pygame.mixer.music.play()
+
+        while pygame.mixer.music.get_busy():
+            continue
+
+        return

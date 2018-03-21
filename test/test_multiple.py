@@ -13,7 +13,7 @@ def main():
     for i in range(1, 4):
         inputs.append((
             '{}/{}.wav'.format(TESTS_PATH, i),
-            '/tmp/test_multiple_{}.mp3'.format(i)
+            './tmp/test_multiple_{}.mp3'.format(i)
         ))
     results = alexa.ask_multiple(inputs)
     print "Responses are saved to: "
